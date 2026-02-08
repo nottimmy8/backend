@@ -10,6 +10,7 @@ const __dirname = path.dirname(__filename);
 
 import authRoutes from "./routes/auth.routes.js";
 import courseRoutes from "./routes/course.routes.js";
+import uploadRoutes from "./routes/upload.routes.js";
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/courses", courseRoutes);
+app.use("/api/v1/upload", uploadRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
