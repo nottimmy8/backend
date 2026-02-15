@@ -23,7 +23,7 @@ export const register = async (req, res) => {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    const { hashedOtp, otp, expiresAt } = generateOtp();
+    // const { hashedOtp, otp, expiresAt } = generateOtp();
 
     await User.create({
       name,
@@ -31,21 +31,21 @@ export const register = async (req, res) => {
       password,
       role: role || "student", // Use validated role or default
 
-      otp: hashedOtp,
-      otpExpiresAt: expiresAt,
-      isVerified: false,
+      // otp: hashedOtp,
+      // otpExpiresAt: expiresAt,
+      isVerified: true,
     });
 
-    await deliverOtp({
-      email,
-      otp,
-      purpose: "Email Verification",
-    });
+    // await deliverOtp({
+    //   email,
+    //   otp,
+    //   purpose: "Email Verification",
+    // });
 
     // console.log("OTP (dev only):", otp); // LOGGED FOR TESTING
 
     res.status(201).json({
-      message: "Registration successful. Please verify your email with OTP.",
+      message: "Registration successful. You can now sign in.",
     });
   } catch (error) {
     console.error("REGISTER ERROR:", error);
@@ -207,8 +207,8 @@ export const login = async (req, res) => {
     if (!user || !(await user.matchPassword(password)))
       return res.status(401).json({ message: "Invalid credentials" });
 
-    if (!user.isVerified)
-      return res.status(403).json({ message: "Verify your email first" });
+    // if (!user.isVerified)
+    //   return res.status(403).json({ message: "Verify your email first" });
 
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
