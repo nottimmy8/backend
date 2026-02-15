@@ -13,6 +13,9 @@ import courseRoutes from "./routes/course.routes.js";
 import uploadRoutes from "./routes/upload.routes.js";
 import tutorRoutes from "./routes/tutor.routes.js";
 import enrollmentRoutes from "./routes/enrollment.routes.js";
+import userRoutes from "./routes/user.routes.js";
+import notificationRoutes from "./routes/notification.routes.js";
+import analyticsRoutes from "./routes/analytics.routes.js";
 
 const app = express();
 
@@ -50,10 +53,13 @@ app.use(express.json());
 app.use("/uploads", express.static(path.join(path.resolve(), "uploads")));
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", userRoutes); // New
 app.use("/api/v1/courses", courseRoutes);
 app.use("/api/v1/upload", uploadRoutes);
 app.use("/api/v1/tutor", tutorRoutes);
 app.use("/api/v1/enrollments", enrollmentRoutes);
+app.use("/api/v1/notifications", notificationRoutes); // New
+app.use("/api/v1/analytics", analyticsRoutes); // New
 
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });

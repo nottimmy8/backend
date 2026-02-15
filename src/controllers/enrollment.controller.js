@@ -1,5 +1,6 @@
 import Enrollment from "../models/Enrollment.js";
 import Course from "../models/Course.js";
+import { createNotification } from "./notification.controller.js";
 
 /**
  * @desc    Initiate enrollment (create pending enrollment)
@@ -103,6 +104,10 @@ export const verifyPayment = async (req, res) => {
     // In a real production scenario, you would verify the transactionId with a payment provider (Paystack, Stripe, etc.)
     // For this implementation, we assume the frontend sends the status from the payment provider hook.
 
+    // ... (existing imports)
+
+    // ...
+
     if (status === "success") {
       enrollment.paymentStatus = "completed";
       enrollment.transactionId = transactionId;
@@ -112,6 +117,28 @@ export const verifyPayment = async (req, res) => {
       await Course.findByIdAndUpdate(enrollment.course, {
         $addToSet: { students: userId },
       });
+
+      // Notify the student
+      await createNotification({
+        recipient: userId,
+        type: "enrollment",
+        title: "Course Enrollment Successful",
+        message: `You have successfully enrolled in the course. Happy learning!`,
+        data: { courseId: enrollment.course },
+      });
+
+      // Notify the tutor (instructor)
+      const course = await Course.findById(enrollment.course);
+      if (course && course.instructor) {
+        await createNotification({
+          recipient: course.instructor,
+          sender: userId,
+          type: "enrollment",
+          title: "New Student Enrolled",
+          message: `A new student has enrolled in your course: ${course.title}`,
+          data: { courseId: course._id, studentId: userId },
+        });
+      }
 
       res.status(200).json({
         message: "Enrollment completed successfully",

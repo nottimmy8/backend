@@ -57,6 +57,41 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    // New Fields for Settings & Profile
+    bio: {
+      type: String,
+      maxlength: 500,
+    },
+    headline: {
+      type: String,
+      maxlength: 100,
+    },
+    socialLinks: {
+      website: String,
+      twitter: String,
+      linkedin: String,
+      youtube: String,
+    },
+    notificationPreferences: {
+      courseUpdates: { type: Boolean, default: true },
+      promotions: { type: Boolean, default: false },
+      messages: { type: Boolean, default: true },
+    },
+    paymentMethods: [
+      {
+        type: { type: String, default: "card" },
+        last4: String,
+        brand: String,
+        isDefault: { type: Boolean, default: false },
+      },
+    ],
+    // Wishlist
+    wishlist: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
     refreshToken: {
       type: String,
       select: false,
